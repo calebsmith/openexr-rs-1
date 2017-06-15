@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `ScanlineOutputFile` struct in crate `openexr`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, ScanlineOutputFile">
+
+    <title>openexr::ScanlineOutputFile - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc struct">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Struct ScanlineOutputFile</p><div class="block items"><ul><li><a href="#methods">Methods</a></li><li><a href="#implementations">Trait Implementations</a></li></ul></div><p class='location'><a href='index.html'>openexr</a></p><script>window.sidebarCurrent = {name: 'ScanlineOutputFile', ty: 'struct', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Struct <a href='index.html'>openexr</a>::<wbr><a class="struct" href=''>ScanlineOutputFile</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../src/openexr/output/scanline_output_file.rs.html#44-55' title='goto source code'>[src]</a></span></h1>
+<pre class='rust struct'>pub struct ScanlineOutputFile&lt;'a&gt; { /* fields omitted */ }</pre><div class='docblock'><p>Writes scanline OpenEXR files.</p>
+
+<p>This is the simplest kind of OpenEXR file.  Image data is stored in
+scanline order with no special features like mipmaps or deep image data.
+Unless you need special features like that, this is probably what you want
+to use.</p>
+
+<h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
+<p>Write a floating point RGB image to a file named &quot;output_file.exr&quot;.</p>
+
+<pre class="rust rust-example-rendered">
+<span class="comment">// Create file with the desired resolution and channels.</span>
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">file</span> <span class="op">=</span> <span class="ident">std</span>::<span class="ident">fs</span>::<span class="ident">File</span>::<span class="ident">create</span>(<span class="string">&quot;output_file.exr&quot;</span>).<span class="ident">unwrap</span>();
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">output_file</span> <span class="op">=</span> <span class="ident">ScanlineOutputFile</span>::<span class="ident">new</span>(
+    <span class="kw-2">&amp;</span><span class="kw-2">mut</span> <span class="ident">file</span>,
+    <span class="ident">Header</span>::<span class="ident">new</span>()
+        .<span class="ident">set_resolution</span>(<span class="number">256</span>, <span class="number">256</span>)
+        .<span class="ident">add_channel</span>(<span class="string">&quot;R&quot;</span>, <span class="ident">PixelType</span>::<span class="ident">FLOAT</span>)
+        .<span class="ident">add_channel</span>(<span class="string">&quot;G&quot;</span>, <span class="ident">PixelType</span>::<span class="ident">FLOAT</span>)
+        .<span class="ident">add_channel</span>(<span class="string">&quot;B&quot;</span>, <span class="ident">PixelType</span>::<span class="ident">FLOAT</span>))
+    .<span class="ident">unwrap</span>();
+
+<span class="comment">// Create the image data and write it to the file.</span>
+<span class="kw">let</span> <span class="ident">pixel_data</span> <span class="op">=</span> <span class="macro">vec</span><span class="macro">!</span>[(<span class="number">0.5f32</span>, <span class="number">1.0f32</span>, <span class="number">0.5f32</span>); <span class="number">256</span> <span class="op">*</span> <span class="number">256</span>];
+<span class="kw">let</span> <span class="kw-2">mut</span> <span class="ident">fb</span> <span class="op">=</span> <span class="ident">FrameBuffer</span>::<span class="ident">new</span>(<span class="number">256</span>, <span class="number">256</span>);
+<span class="ident">fb</span>.<span class="ident">insert_channels</span>(<span class="kw-2">&amp;</span>[<span class="string">&quot;R&quot;</span>, <span class="string">&quot;G&quot;</span>, <span class="string">&quot;B&quot;</span>], <span class="kw-2">&amp;</span><span class="ident">pixel_data</span>);
+<span class="ident">output_file</span>.<span class="ident">write_pixels</span>(<span class="kw-2">&amp;</span><span class="ident">fb</span>).<span class="ident">unwrap</span>();</pre>
+</div><h2 id='methods'>Methods</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a&gt; <a class="struct" href="../openexr/struct.ScanlineOutputFile.html" title="struct openexr::ScanlineOutputFile">ScanlineOutputFile</a>&lt;'a&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/openexr/output/scanline_output_file.rs.html#57-257' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.new' class="method"><span id='new.v' class='invisible'><code>fn <a href='#method.new' class='fnname'>new</a>&lt;T:&nbsp;'a&gt;(<br>&nbsp;&nbsp;&nbsp;&nbsp;writer: &amp;'a mut T, <br>&nbsp;&nbsp;&nbsp;&nbsp;header: &amp;<a class="struct" href="../openexr/header/struct.Header.html" title="struct openexr::header::Header">Header</a><br>) -&gt; <a class="type" href="../openexr/error/type.Result.html" title="type openexr::error::Result">Result</a>&lt;<a class="struct" href="../openexr/struct.ScanlineOutputFile.html" title="struct openexr::ScanlineOutputFile">ScanlineOutputFile</a>&lt;'a&gt;&gt; <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;T: <a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Write.html" title="trait std::io::Write">Write</a> + <a class="trait" href="https://doc.rust-lang.org/nightly/std/io/trait.Seek.html" title="trait std::io::Seek">Seek</a>,&nbsp;</span></code></span></h4>
+<div class='docblock'><p>Creates a new <code>ScanlineOutputFile</code> from any <code>Write + Seek</code> type
+(typically a <code>std::fs::File</code>) and <code>header</code>.</p>
+
+<p>Note: this seeks to byte 0 before writing.</p>
+</div><h4 id='method.write_pixels' class="method"><span id='write_pixels.v' class='invisible'><code>fn <a href='#method.write_pixels' class='fnname'>write_pixels</a>(&amp;mut self, framebuffer: &amp;<a class="struct" href="../openexr/frame_buffer/struct.FrameBuffer.html" title="struct openexr::frame_buffer::FrameBuffer">FrameBuffer</a>) -&gt; <a class="type" href="../openexr/error/type.Result.html" title="type openexr::error::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>&gt;</code></span></h4>
+<div class='docblock'><p>Writes the entire image at once from <code>framebuffer</code>.</p>
+
+<h1 id='errors' class='section-header'><a href='#errors'>Errors</a></h1>
+<p>This function expects <code>framebuffer</code> to have the same resolution as the
+output file, as well as the same channels (with matching types and
+subsampling).</p>
+
+<p>It will also return an error if:</p>
+
+<ul>
+<li>Part or all of the image data has already been written by a previous
+call to either this or <code>write_pixels_incremental</code>.</li>
+<li>There is an I/O error.</li>
+</ul>
+</div><h4 id='method.write_pixels_incremental' class="method"><span id='write_pixels_incremental.v' class='invisible'><code>fn <a href='#method.write_pixels_incremental' class='fnname'>write_pixels_incremental</a>(&amp;mut self, framebuffer: &amp;<a class="struct" href="../openexr/frame_buffer/struct.FrameBuffer.html" title="struct openexr::frame_buffer::FrameBuffer">FrameBuffer</a>) -&gt; <a class="type" href="../openexr/error/type.Result.html" title="type openexr::error::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">()</a>&gt;</code></span></h4>
+<div class='docblock'><p>Writes the image incrementally over multiple calls.</p>
+
+<p><code>framebuffer</code> may have a different vertical resolution than the image,
+but it must have the same horizontal resolution.  Multiple calls will
+incrementally write chunks of scanlines in the order given until the
+image is complete.</p>
+
+<p>For example, to write a 2000-pixel-tall image, you could call this
+function four times with 500-pixel-tall FrameBuffers.</p>
+
+<p>Note: all scanlines must be written for the resulting OpenEXR file to
+be complete and correct.</p>
+
+<h1 id='errors-1' class='section-header'><a href='#errors-1'>Errors</a></h1>
+<p>This function expects <code>framebuffer</code> to have the same <em>horizontal</em>
+resolution as the output file, as well as the same channels (with
+matching types and subsampling).</p>
+
+<p>It will also return an error if:</p>
+
+<ul>
+<li><code>framebuffer</code> contains more scanlines than remain to be written.</li>
+<li>There is an I/O error.</li>
+</ul>
+</div><h4 id='method.header' class="method"><span id='header.v' class='invisible'><code>fn <a href='#method.header' class='fnname'>header</a>(&amp;self) -&gt; &amp;<a class="struct" href="../openexr/header/struct.Header.html" title="struct openexr::header::Header">Header</a></code></span></h4>
+<div class='docblock'><p>Access to the file&#39;s header.</p>
+</div></div><h2 id='implementations'>Trait Implementations</h2><h3 class='impl'><span class='in-band'><code>impl&lt;'a&gt; <a class="trait" href="https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html" title="trait core::ops::Drop">Drop</a> for <a class="struct" href="../openexr/struct.ScanlineOutputFile.html" title="struct openexr::ScanlineOutputFile">ScanlineOutputFile</a>&lt;'a&gt;</code></span><span class='out-of-band'><div class='ghost'></div><a class='srclink' href='../src/openexr/output/scanline_output_file.rs.html#259-264' title='goto source code'>[src]</a></span></h3>
+<div class='impl-items'><h4 id='method.drop' class="method"><span id='drop.v' class='invisible'><code>fn <a href='https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html#tymethod.drop' class='fnname'>drop</a>(&amp;mut self)</code></span></h4>
+<div class='docblock'><p>A method called when the value goes out of scope. <a href="https://doc.rust-lang.org/nightly/core/ops/trait.Drop.html#tymethod.drop">Read more</a></p>
+</div></div></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../";
+        window.currentCrate = "openexr";
+    </script>
+    <script src="../jquery.js"></script>
+    <script src="../main.js"></script>
+    <script defer src="../search-index.js"></script>
+</body>
+</html>

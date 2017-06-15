@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content="rustdoc">
+    <meta name="description" content="API documentation for the Rust `PixelStruct` trait in crate `openexr`.">
+    <meta name="keywords" content="rust, rustlang, rust-lang, PixelStruct">
+
+    <title>openexr::frame_buffer::PixelStruct - Rust</title>
+
+    <link rel="stylesheet" type="text/css" href="../../normalize.css">
+    <link rel="stylesheet" type="text/css" href="../../rustdoc.css">
+    <link rel="stylesheet" type="text/css" href="../../main.css">
+    
+
+    
+    
+</head>
+<body class="rustdoc trait">
+    <!--[if lte IE 8]>
+    <div class="warning">
+        This old browser is unsupported and will most likely display funky
+        things.
+    </div>
+    <![endif]-->
+
+    
+
+    <nav class="sidebar">
+        
+        <p class='location'>Trait PixelStruct</p><div class="block items"><ul><li><a href="#required-methods">Required Methods</a></li><li><a href="#provided-methods">Provided Methods</a></li><li><a href="#implementors">Implementors</a></li></ul></div><p class='location'><a href='../index.html'>openexr</a>::<wbr><a href='index.html'>frame_buffer</a></p><script>window.sidebarCurrent = {name: 'PixelStruct', ty: 'trait', relpath: ''};</script><script defer src="sidebar-items.js"></script>
+    </nav>
+
+    <nav class="sub">
+        <form class="search-form js-only">
+            <div class="search-container">
+                <input class="search-input" name="search"
+                       autocomplete="off"
+                       placeholder="Click or press ‘S’ to search, ‘?’ for more options…"
+                       type="search">
+            </div>
+        </form>
+    </nav>
+
+    <section id='main' class="content">
+<h1 class='fqn'><span class='in-band'>Trait <a href='../index.html'>openexr</a>::<wbr><a href='index.html'>frame_buffer</a>::<wbr><a class="trait" href=''>PixelStruct</a></span><span class='out-of-band'><span id='render-detail'>
+                   <a id="toggle-all-docs" href="javascript:void(0)" title="collapse all docs">
+                       [<span class='inner'>&#x2212;</span>]
+                   </a>
+               </span><a class='srclink' href='../../src/openexr/frame_buffer.rs.html#376-389' title='goto source code'>[src]</a></span></h1>
+<pre class='rust trait'>pub unsafe trait PixelStruct {
+    fn <a href='#tymethod.channel_count' class='fnname'>channel_count</a>() -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>;
+    fn <a href='#tymethod.channel' class='fnname'>channel</a>(i: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a><a class="enum" href="../../openexr/enum.PixelType.html" title="enum openexr::PixelType">PixelType</a>, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a>;
+
+    fn <a href='#method.channels' class='fnname'>channels</a>() -&gt; <a class="type" href="../../openexr/frame_buffer/type.PixelStructChannelIter.html" title="type openexr::frame_buffer::PixelStructChannelIter">PixelStructChannelIter</a> { ... }
+}</pre><div class='docblock'><p>Types that can be inserted into a <code>FrameBuffer</code> as a set of channels.</p>
+
+<p>This should only be implemented for types that that contain components that
+are bitwise- and semantically-identical to the <code>PixelType</code> variants.</p>
+
+<p>The intended use of this is to allow e.g. a tuple or struct of RGB values
+to be used directly by the library to write data out to and read data in
+from EXR files.  This avoids having to create buffers of converted values.</p>
+
+<h1 id='examples' class='section-header'><a href='#examples'>Examples</a></h1>
+<pre class="rust rust-example-rendered">
+<span class="kw">use</span> <span class="ident">openexr</span>::<span class="ident">PixelType</span>;
+<span class="kw">use</span> <span class="ident">openexr</span>::<span class="ident">frame_buffer</span>::<span class="ident">PixelStruct</span>;
+
+<span class="attribute">#[<span class="ident">repr</span>(<span class="ident">C</span>)]</span>
+<span class="attribute">#[<span class="ident">derive</span>(<span class="ident">Copy</span>, <span class="ident">Clone</span>)]</span>
+<span class="kw">struct</span> <span class="ident">RGB</span> {
+    <span class="ident">r</span>: <span class="ident">f32</span>,
+    <span class="ident">g</span>: <span class="ident">f32</span>,
+    <span class="ident">b</span>: <span class="ident">f32</span>,
+}
+
+<span class="kw">unsafe</span> <span class="kw">impl</span> <span class="ident">PixelStruct</span> <span class="kw">for</span> <span class="ident">RGB</span> {
+    <span class="kw">fn</span> <span class="ident">channel_count</span>() <span class="op">-&gt;</span> <span class="ident">usize</span> { <span class="number">3</span> }
+    <span class="kw">fn</span> <span class="ident">channel</span>(<span class="ident">i</span>: <span class="ident">usize</span>) <span class="op">-&gt;</span> (<span class="ident">PixelType</span>, <span class="ident">usize</span>) {
+        [(<span class="ident">PixelType</span>::<span class="ident">FLOAT</span>, <span class="number">0</span>),
+         (<span class="ident">PixelType</span>::<span class="ident">FLOAT</span>, <span class="number">4</span>),
+         (<span class="ident">PixelType</span>::<span class="ident">FLOAT</span>, <span class="number">8</span>)][<span class="ident">i</span>]
+    }
+}</pre>
+</div>
+            <h2 id='required-methods'>Required Methods</h2>
+            <div class='methods'>
+        <h3 id='tymethod.channel_count' class='method'><span id='channel_count.v' class='invisible'><code>fn <a href='#tymethod.channel_count' class='fnname'>channel_count</a>() -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a></code></span></h3><div class='docblock'><p>Returns the number of channels in this type</p>
+</div><h3 id='tymethod.channel' class='method'><span id='channel.v' class='invisible'><code>fn <a href='#tymethod.channel' class='fnname'>channel</a>(i: <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a>) -&gt; <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a><a class="enum" href="../../openexr/enum.PixelType.html" title="enum openexr::PixelType">PixelType</a>, <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.usize.html">usize</a><a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a></code></span></h3><div class='docblock'><p>Returns the type and offset of channel <code>i</code></p>
+
+<h1 id='panics' class='section-header'><a href='#panics'>Panics</a></h1>
+<p>Will either panic or return garbage when <code>i &gt;= channel_count()</code>.</p>
+</div></div>
+            <h2 id='provided-methods'>Provided Methods</h2>
+            <div class='methods'>
+        <h3 id='method.channels' class='method'><span id='channels.v' class='invisible'><code>fn <a href='#method.channels' class='fnname'>channels</a>() -&gt; <a class="type" href="../../openexr/frame_buffer/type.PixelStructChannelIter.html" title="type openexr::frame_buffer::PixelStructChannelIter">PixelStructChannelIter</a></code></span></h3><div class='docblock'><p>Returns an iterator over the set of channels</p>
+</div></div>
+        <h2 id='implementors'>Implementors</h2>
+        <ul class='item-list' id='implementors-list'>
+    <li><code>impl&lt;T:&nbsp;<a class="trait" href="../../openexr/frame_buffer/trait.PixelData.html" title="trait openexr::frame_buffer::PixelData">PixelData</a>&gt; PixelStruct for T</code></li>
+<li><code>impl&lt;A:&nbsp;<a class="trait" href="../../openexr/frame_buffer/trait.PixelData.html" title="trait openexr::frame_buffer::PixelData">PixelData</a>&gt; PixelStruct for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a>A<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">,)</a></code></li>
+<li><code>impl&lt;A, B&gt; PixelStruct for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a>A, B<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a> <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;A: <a class="trait" href="../../openexr/frame_buffer/trait.PixelData.html" title="trait openexr::frame_buffer::PixelData">PixelData</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;B: <a class="trait" href="../../openexr/frame_buffer/trait.PixelData.html" title="trait openexr::frame_buffer::PixelData">PixelData</a>,&nbsp;</span></code></li>
+<li><code>impl&lt;A, B, C&gt; PixelStruct for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a>A, B, C<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a> <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;A: <a class="trait" href="../../openexr/frame_buffer/trait.PixelData.html" title="trait openexr::frame_buffer::PixelData">PixelData</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;B: <a class="trait" href="../../openexr/frame_buffer/trait.PixelData.html" title="trait openexr::frame_buffer::PixelData">PixelData</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;C: <a class="trait" href="../../openexr/frame_buffer/trait.PixelData.html" title="trait openexr::frame_buffer::PixelData">PixelData</a>,&nbsp;</span></code></li>
+<li><code>impl&lt;A, B, C, D&gt; PixelStruct for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">(</a>A, B, C, D<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.tuple.html">)</a> <span class="where fmt-newline">where<br>&nbsp;&nbsp;&nbsp;&nbsp;A: <a class="trait" href="../../openexr/frame_buffer/trait.PixelData.html" title="trait openexr::frame_buffer::PixelData">PixelData</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;B: <a class="trait" href="../../openexr/frame_buffer/trait.PixelData.html" title="trait openexr::frame_buffer::PixelData">PixelData</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;C: <a class="trait" href="../../openexr/frame_buffer/trait.PixelData.html" title="trait openexr::frame_buffer::PixelData">PixelData</a>,<br>&nbsp;&nbsp;&nbsp;&nbsp;D: <a class="trait" href="../../openexr/frame_buffer/trait.PixelData.html" title="trait openexr::frame_buffer::PixelData">PixelData</a>,&nbsp;</span></code></li>
+<li><code>impl&lt;T:&nbsp;<a class="trait" href="../../openexr/frame_buffer/trait.PixelData.html" title="trait openexr::frame_buffer::PixelData">PixelData</a>&gt; PixelStruct for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">[</a>T<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">; 1]</a></code></li>
+<li><code>impl&lt;T:&nbsp;<a class="trait" href="../../openexr/frame_buffer/trait.PixelData.html" title="trait openexr::frame_buffer::PixelData">PixelData</a>&gt; PixelStruct for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">[</a>T<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">; 2]</a></code></li>
+<li><code>impl&lt;T:&nbsp;<a class="trait" href="../../openexr/frame_buffer/trait.PixelData.html" title="trait openexr::frame_buffer::PixelData">PixelData</a>&gt; PixelStruct for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">[</a>T<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">; 3]</a></code></li>
+<li><code>impl&lt;T:&nbsp;<a class="trait" href="../../openexr/frame_buffer/trait.PixelData.html" title="trait openexr::frame_buffer::PixelData">PixelData</a>&gt; PixelStruct for <a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">[</a>T<a class="primitive" href="https://doc.rust-lang.org/nightly/std/primitive.array.html">; 4]</a></code></li>
+</ul><script type="text/javascript" async
+                         src="../../implementors/openexr/frame_buffer/trait.PixelStruct.js">
+                 </script></section>
+    <section id='search' class="content hidden"></section>
+
+    <section class="footer"></section>
+
+    <aside id="help" class="hidden">
+        <div>
+            <h1 class="hidden">Help</h1>
+
+            <div class="shortcuts">
+                <h2>Keyboard Shortcuts</h2>
+
+                <dl>
+                    <dt>?</dt>
+                    <dd>Show this help dialog</dd>
+                    <dt>S</dt>
+                    <dd>Focus the search field</dd>
+                    <dt>&larrb;</dt>
+                    <dd>Move up in search results</dd>
+                    <dt>&rarrb;</dt>
+                    <dd>Move down in search results</dd>
+                    <dt>&#9166;</dt>
+                    <dd>Go to active search result</dd>
+                    <dt>+</dt>
+                    <dd>Collapse/expand all sections</dd>
+                </dl>
+            </div>
+
+            <div class="infos">
+                <h2>Search Tricks</h2>
+
+                <p>
+                    Prefix searches with a type followed by a colon (e.g.
+                    <code>fn:</code>) to restrict the search to a given type.
+                </p>
+
+                <p>
+                    Accepted types are: <code>fn</code>, <code>mod</code>,
+                    <code>struct</code>, <code>enum</code>,
+                    <code>trait</code>, <code>type</code>, <code>macro</code>,
+                    and <code>const</code>.
+                </p>
+
+                <p>
+                    Search functions by type signature (e.g.
+                    <code>vec -> usize</code> or <code>* -> vec</code>)
+                </p>
+            </div>
+        </div>
+    </aside>
+
+    
+
+    <script>
+        window.rootPath = "../../";
+        window.currentCrate = "openexr";
+    </script>
+    <script src="../../jquery.js"></script>
+    <script src="../../main.js"></script>
+    <script defer src="../../search-index.js"></script>
+</body>
+</html>
